@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal dos jogos da família Veloso no Natal de 2026: quiz, cápsula do tempo, bingo, karaokê e jogo da memória.">
+    <meta name="description" content="Jogos de Família no Natal de 2026: quiz, cápsula do tempo, bingo, karaokê, jogo da memória e, só para adultos, O Poder do Dedo.">
     <meta name="theme-color" content="#0d3320">
     <meta name="color-scheme" content="dark">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>🎄 NatalEuJogo — Portal da Família · Natal 2026</title>
+    <meta property="og:title" content="Jogos de Família · Natal 2026">
+    <meta property="og:description" content="Quiz, cápsula do tempo, bingo, karaokê e jogo da memória da família Veloso. O Poder do Dedo fica separado, só para adultos.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:url" content="https://bavkiq-hugby8-cittet.github.io/nataleujogo/">
+    <title>🎄 Jogos de Família · Natal 2026</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%84%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,11 +168,12 @@
 
         .logo h1 {
             font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
-            font-size: clamp(1.7rem, 6vw, 2.5rem);
+            font-size: clamp(1.35rem, 4.6vw, 2.15rem);
             color: var(--white);
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
+            letter-spacing: 0.2px;
             line-height: 1.1;
+            text-wrap: balance;
         }
 
         .edition {
@@ -327,6 +333,65 @@
         .icon-memoria {
             background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
             box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .icon-dedo {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .adults {
+            margin-top: 28px;
+            padding: 26px 18px 10px;
+            border-radius: 28px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(248, 178, 41, 0.55);
+        }
+
+        .adults-heading {
+            text-align: center;
+            max-width: 38rem;
+            margin: 0 auto 4px;
+        }
+
+        .adults-heading h2 {
+            font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
+            font-size: clamp(1.35rem, 3vw, 1.7rem);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .adults-heading p {
+            margin-top: 8px;
+            color: var(--cream);
+            line-height: 1.5;
+        }
+
+        .adults .games-grid {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .game-card-adult {
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.25),
+                0 0 0 4px rgba(248, 178, 41, 0.35);
+        }
+
+        .age-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 1;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #1f2937;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1;
         }
 
         .game-title {
@@ -495,11 +560,11 @@
         <header class="header">
             <div class="logo">
                 <span class="logo-icon" aria-hidden="true">🎄</span>
-                <h1>NatalEuJogo</h1>
+                <h1>Jogos de Família</h1>
             </div>
             <p class="edition">Natal 2026</p>
             <p class="subtitle">Diversão em família, para todas as idades.</p>
-            <p class="hint">O botão abre o painel da TV. Quem estiver no celular entra pelo QR Code mostrado na tela.</p>
+            <p class="hint">Nos jogos da família, o botão abre o painel da TV. Quem estiver no celular entra pelo QR Code mostrado na tela.</p>
             <div class="lights" aria-hidden="true">
                 <div class="light"></div>
                 <div class="light"></div>
@@ -589,6 +654,30 @@
                     </a>
                 </li>
             </ul>
+
+            <section class="adults" aria-labelledby="adultos-titulo">
+                <div class="adults-heading">
+                    <h2 id="adultos-titulo">Só para adultos</h2>
+                    <p>Jogo de cartas com bebida. Deixe para quando as crianças não estiverem na roda.</p>
+                </div>
+                <ul class="games-grid">
+                    <li>
+                        <a class="game-card game-card-adult" href="https://bavkiq-hugby8-cittet.github.io/opoderdodedo-versao6-/" target="_blank" rel="noopener noreferrer">
+                            <span class="age-badge">+18</span>
+                            <span class="game-icon icon-dedo" aria-hidden="true">🃏</span>
+                            <h3 class="game-title">O Poder do Dedo</h3>
+                            <p class="game-description">Jogo de cartas com bebida. Cada carta manda uma missão: escolher quem bebe, criar uma regra ou passar o dedo. Só para maiores de 18 anos.</p>
+                            <ul class="game-tags" aria-label="Características">
+                                <li class="tag"><span aria-hidden="true">🔞 </span>+18</li>
+                                <li class="tag"><span aria-hidden="true">🃏 </span>Cartas</li>
+                                <li class="tag"><span aria-hidden="true">🥃 </span>Bebida</li>
+                            </ul>
+                            <span class="play-button"><span aria-hidden="true">👆 </span>Jogar <span aria-hidden="true">→</span></span>
+                            <span class="sr-only">Abre em uma nova aba. Jogo para maiores de 18 anos.</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
         </main>
 
         <footer class="footer">
@@ -597,7 +686,7 @@
             <p class="footer-links">
                 <a href="https://bavkiq-hugby8-cittet.github.io/nataldosvelsoso/" target="_blank" rel="noopener noreferrer">Programação do encontro</a>
             </p>
-            <small>© 2026 NatalEuJogo</small>
+            <small>© 2026 Jogos de Família</small>
         </footer>
     </div>
 

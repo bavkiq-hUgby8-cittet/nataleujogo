@@ -1,0 +1,165 @@
+{
+  "rules": {
+    "codigos": {
+      "$code": {
+        ".read": "auth != null && $code.matches(/^[A-Z0-9]{8}$/)",
+        ".write": "$code.matches(/^[A-Z0-9]{8}$/) && ((auth.token.email != null && !data.exists() && newData.child('familia').val() == auth.uid && newData.child('jogo').isString() && newData.child('partida').isString() && newData.child('jogo').val().length <= 20 && newData.child('partida').val().length <= 128) || (data.exists() && auth.uid == data.child('familia').val() && !newData.exists()))"
+      }
+    },
+    "families": {
+      "$familyId": {
+        "meta": {
+          ".read": "auth.uid == $familyId",
+          ".write": "auth.uid == $familyId && auth.token.email != null && newData.child('ownerUid').val() == auth.uid && newData.child('nome').isString() && newData.child('nome').val().length >= 2 && newData.child('nome').val().length <= 60 && (newData.child('tema').val() == 'padrao' || newData.child('tema').val() == 'natal') && newData.child('criadaEm').isNumber()"
+        },
+        "quiz": {
+          "perguntas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$id": {
+              ".validate": "!newData.exists() || (newData.child('texto').isString() && newData.child('texto').val().length >= 1 && newData.child('texto').val().length <= 280 && newData.child('correta').isNumber() && newData.child('correta').val() >= 0 && newData.child('correta').val() <= 3 && newData.child('opcoes').child('0').isString() && newData.child('opcoes').child('1').isString() && newData.child('opcoes').child('2').isString() && newData.child('opcoes').child('3').isString())"
+            }
+          },
+          "gabaritos": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId"
+          },
+          "partidas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$pid": {
+              ".read": "auth != null",
+              "jogadores": {
+                "$uid": {
+                  ".write": "auth.uid == $uid && (root.child('families').child($familyId).child('quiz').child('partidas').child($pid).child('status').val() == 'lobby' || root.child('families').child($familyId).child('quiz').child('partidas').child($pid).child('status').val() == 'pergunta' || root.child('families').child($familyId).child('quiz').child('partidas').child($pid).child('status').val() == 'revelada') && newData.child('nome').isString() && newData.child('nome').val().length >= 1 && newData.child('nome').val().length <= 40 && newData.child('foto').isString() && (newData.child('foto').val() == '' || (newData.child('foto').val().beginsWith('data:image/jpeg') && newData.child('foto').val().length < 90000)) && ((!data.exists() && newData.child('pontos').val() == 0) || (data.exists() && newData.child('pontos').val() == data.child('pontos').val() && newData.child('nome').val() == data.child('nome').val()))"
+                }
+              },
+              "respostas": {
+                "$rodada": {
+                  "$uid": {
+                    ".write": "auth.uid == $uid && !data.exists() && newData.isNumber() && newData.val() >= 0 && newData.val() <= 3 && root.child('families').child($familyId).child('quiz').child('partidas').child($pid).child('status').val() == 'pergunta' && (root.child('families').child($familyId).child('quiz').child('partidas').child($pid).child('rodada').val() + '') == $rodada"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "bingo": {
+          "partidas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$pid": {
+              "publico": {
+                ".read": "auth != null"
+              },
+              "presenca": {
+                ".read": "auth != null",
+                "$uid": {
+                  ".write": "auth.uid == $uid && !data.exists() && newData.isString() && newData.val().length >= 1 && newData.val().length <= 40 && root.child('families').child($familyId).child('bingo').child('partidas').child($pid).child('publico').child('status').val() == 'lobby'"
+                }
+              },
+              "cartelas": {
+                "$uid": {
+                  ".read": "auth.uid == $uid",
+                  ".write": "auth.uid == $uid && !data.exists() && newData.isString() && newData.val().matches(/^[0-9,]{10,220}$/) && root.child('families').child($familyId).child('bingo').child('partidas').child($pid).child('publico').child('status').val() == 'lobby'"
+                }
+              },
+              "pedidos": {
+                ".read": "auth != null",
+                "$uid": {
+                  ".write": "auth.uid == $uid && !data.exists() && newData.val() == true && root.child('families').child($familyId).child('bingo').child('partidas').child($pid).child('publico').child('status').val() == 'jogando'"
+                }
+              }
+            }
+          }
+        },
+        "karaoke": {
+          "musicas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$id": {
+              ".validate": "!newData.exists() || (newData.child('titulo').isString() && newData.child('titulo').val().length >= 1 && newData.child('titulo').val().length <= 80)"
+            }
+          },
+          "partidas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$pid": {
+              ".read": "auth != null",
+              "fila": {
+                "$item": {
+                  ".write": "!data.exists() && newData.child('uid').val() == auth.uid && newData.child('titulo').isString() && newData.child('titulo').val().length >= 1 && newData.child('titulo').val().length <= 80 && newData.child('nome').isString() && newData.child('nome').val().length >= 1 && newData.child('nome').val().length <= 40 && newData.child('videoId').isString() && (newData.child('videoId').val() == '' || newData.child('videoId').val().matches(/^[A-Za-z0-9_-]{11}$/)) && (root.child('families').child($familyId).child('karaoke').child('partidas').child($pid).child('status').val() == 'lobby' || root.child('families').child($familyId).child('karaoke').child('partidas').child($pid).child('status').val() == 'show')"
+                }
+              },
+              "votos": {
+                "$uid": {
+                  ".write": "auth.uid == $uid && !data.exists() && newData.isNumber() && newData.val() >= 1 && newData.val() <= 5 && root.child('families').child($familyId).child('karaoke').child('partidas').child($pid).child('fase').val() == 'votando'"
+                }
+              }
+            }
+          }
+        },
+        "memoria": {
+          "fotos": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$id": {
+              ".validate": "!newData.exists() || (newData.child('imagem').isString() && newData.child('imagem').val().beginsWith('data:image/jpeg') && newData.child('imagem').val().length < 120000)"
+            }
+          },
+          "partidas": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$pid": {
+              "publico": { ".read": "auth != null" },
+              "visiveis": { ".read": "auth != null" },
+              "jogadores": {
+                ".read": "auth != null",
+                "$uid": {
+                  ".write": "auth.uid == $uid && !data.exists() && newData.child('nome').isString() && newData.child('nome').val().length >= 1 && newData.child('nome').val().length <= 40 && newData.child('pontos').val() == 0 && newData.child('foto').isString() && (newData.child('foto').val() == '' || (newData.child('foto').val().beginsWith('data:image/jpeg') && newData.child('foto').val().length < 90000)) && root.child('families').child($familyId).child('memoria').child('partidas').child($pid).child('publico').child('status').val() == 'lobby'"
+                }
+              },
+              "tentativa": {
+                ".read": "auth != null",
+                ".write": "newData.child('uid').val() == auth.uid && newData.child('uid').val() == root.child('families').child($familyId).child('memoria').child('partidas').child($pid).child('publico').child('vezUid').val() && newData.child('a').isNumber() && newData.child('b').isNumber() && newData.child('a').val() != newData.child('b').val() && newData.child('a').val() >= 0 && newData.child('a').val() <= 35 && newData.child('b').val() >= 0 && newData.child('b').val() <= 35 && root.child('families').child($familyId).child('memoria').child('partidas').child($pid).child('publico').child('status').val() == 'jogando'"
+              },
+              "segredo": {
+                ".read": "auth.uid == $familyId"
+              }
+            }
+          }
+        },
+        "capsula": {
+          "indice": {
+            ".read": "auth.uid == $familyId",
+            ".write": "auth.uid == $familyId",
+            "$eid": {
+              ".validate": "!newData.exists() || (newData.child('titulo').isString() && newData.child('titulo').val().length >= 1 && newData.child('titulo').val().length <= 80 && newData.child('abreEm').isNumber())"
+            }
+          },
+          "eventos": {
+            "$eid": {
+              ".write": "auth.uid == $familyId && !newData.exists()",
+              "publico": {
+                ".read": "auth != null",
+                ".write": "auth.uid == $familyId && ( !newData.exists() || (newData.child('titulo').isString() && newData.child('titulo').val().length >= 1 && newData.child('titulo').val().length <= 80 && newData.child('abreEm').isNumber()) )"
+              },
+              "nomes": {
+                ".read": "auth != null",
+                "$uid": {
+                  ".write": "(auth.uid == $uid && !data.exists() && newData.isString() && newData.val().length >= 1 && newData.val().length <= 40 && now < root.child('families').child($familyId).child('capsula').child('eventos').child($eid).child('publico').child('abreEm').val()) || (auth.uid == $familyId && !newData.exists())"
+                }
+              },
+              "segredos": {
+                ".read": "auth != null && now >= root.child('families').child($familyId).child('capsula').child('eventos').child($eid).child('publico').child('abreEm').val()",
+                "$uid": {
+                  ".write": "(auth.uid == $uid && !data.exists() && newData.child('texto').isString() && newData.child('texto').val().length >= 1 && newData.child('texto').val().length <= 1200 && newData.child('foto').isString() && (newData.child('foto').val() == '' || (newData.child('foto').val().beginsWith('data:image/jpeg') && newData.child('foto').val().length < 90000)) && now < root.child('families').child($familyId).child('capsula').child('eventos').child($eid).child('publico').child('abreEm').val()) || (auth.uid == $familyId && !newData.exists())"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

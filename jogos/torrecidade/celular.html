@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="neutro">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f4f1e8" />
+    <meta
+      name="description"
+      content="Uma torre. Uma cidade. Toda a família. Construam juntos, cada um no seu celular."
+    />
+    <title>Torre / Cidade Juntos</title>
+    <link rel="icon" href="assets/icon.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="importmap">
+      { "imports": { "three": "./vendor/three.js" } }
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html"
+        ><span class="brand-icon" aria-hidden="true">▦</span
+        ><span>torre <i>&</i> cidade<small>CONSTRUÍDO POR NÓS</small></span></a
+      >
+      <div class="top-actions">
+        <span id="connection" role="status" class="connection"
+          >Demonstração local</span
+        ><button
+          id="settings-toggle"
+          class="icon-button"
+          aria-label="Abrir configurações"
+        >
+          ⚙
+        </button>
+      </div>
+    </header>
+    <main class="game-shell">
+      <section class="world" aria-label="Maquete 3D da construção">
+        <canvas
+          id="scene"
+          aria-label="Construção 3D. Arraste para girar a câmera; toque no chão para posicionar a peça."
+        ></canvas>
+        <div class="scene-heading">
+          <span class="eyebrow" id="mode-label"
+            >UM MUNDO PARA CHAMAR DE NOSSO</span
+          >
+          <h1 id="scene-title">Juntos, a gente<br />vai mais alto.</h1>
+          <p id="scene-description">
+            Uma peça sua. Outra de alguém que você ama.
+          </p>
+        </div>
+        <div id="hud" class="hud" hidden>
+          <div>
+            <small id="goal-label">ALTURA DA FAMÍLIA</small
+            ><strong id="height">0 <em>m</em></strong>
+          </div>
+          <div class="goal">
+            <span id="goal">Meta: 5 m</span
+            ><progress id="progress" max="5" value="0"></progress>
+          </div>
+          <span id="lives" aria-label="Três vidas">♥ ♥ ♥</span>
+        </div>
+        <div class="scene-actions">
+          <span class="scene-tip"
+            >↔ Arraste para olhar · Toque para posicionar</span
+          ><button
+            id="recenter"
+            class="icon-button"
+            aria-label="Recentrar câmera"
+          >
+            ◎</button
+          ><button
+            id="toggle-3d"
+            class="icon-button"
+            aria-label="Alternar controles 2D"
+          >
+            2D
+          </button>
+        </div>
+        <div id="world-ping" class="world-ping" role="status"></div>
+        <div id="fallback" hidden class="fallback">
+          Sua construção continua nos controles 2D. Use as setas abaixo para
+          ajudar a família.
+        </div>
+      </section>
+      <aside class="side-panel">
+        <section id="welcome" class="welcome">
+          <span class="eyebrow">DE PERTO OU DE LONGE</span>
+          <h2>O melhor lugar<br />é onde a gente se encontra.</h2>
+          <p>
+            Entrem quando puderem. Construam uma torre, criem um bairro e deixem
+            uma lembrança para quem chegar depois.
+          </p>
+          <div class="mode-cards">
+            <button class="mode-card selected" data-mode="torre">
+              <span>▥</span
+              ><strong
+                >Torre juntos<small
+                  >Equilíbrio, risadas e frio na barriga.</small
+                ></strong
+              ><i>↗</i></button
+            ><button class="mode-card" data-mode="cidade">
+              <span>⌂</span
+              ><strong
+                >Missão cidade<small
+                  >Cada peça no seu lugar. Todo mundo ajuda.</small
+                ></strong
+              ><i>↗</i></button
+            ><button class="mode-card" data-mode="mundo">
+              <span>♧</span
+              ><strong
+                >Nossa cidade<small
+                  >Sem pressa. Sempre pronta para receber vocês.</small
+                ></strong
+              ><i>↗</i>
+            </button>
+          </div>
+          <button id="demo" class="primary">
+            Experimentar agora <span>→</span></button
+          ><a class="secondary" href="../../painel.html"
+            >Criar sala no painel da família</a
+          >
+          <p class="fine">
+            1–6 pessoas · Sem instalar · Convidados sem cadastro
+          </p>
+        </section>
+        <section id="join" hidden>
+          <span class="eyebrow">TEM UM LUGAR PARA VOCÊ</span>
+          <h2>Vamos construir?</h2>
+          <p id="join-description">Escolha como a família vai te ver.</p>
+          <form id="join-form">
+            <label for="name">Seu nome</label
+            ><input
+              id="name"
+              required
+              maxlength="30"
+              autocomplete="given-name"
+              placeholder="Como a família te chama?"
+            /><label for="avatar">Seu companheiro de obra</label
+            ><select id="avatar">
+              <option>🦊</option>
+              <option>🐻</option>
+              <option>🐱</option>
+              <option>🐼</option>
+              <option>🐸</option>
+              <option>🦉</option></select
+            ><button type="submit" class="primary">
+              Entrar na construção <span>→</span>
+            </button>
+          </form>
+          <p class="fine" id="join-note">
+            Seu nome e suas contribuições ficam apenas nesta família.
+          </p>
+        </section>
+        <section id="play" hidden>
+          <div class="people-heading">
+            <span class="eyebrow">NOSSA EQUIPE</span
+            ><button id="invite" class="text-button">+ Chamar família</button>
+          </div>
+          <div id="people" class="people"></div>
+          <div class="stability">
+            <div>
+              <span>Equilíbrio da construção</span
+              ><strong id="stability-label">Firme e forte</strong>
+            </div>
+            <meter
+              id="stability"
+              min="0"
+              max="100"
+              low="35"
+              high="65"
+              optimum="95"
+              value="100"
+            ></meter>
+          </div>
+          <div class="role-header">
+            <div>
+              <span class="eyebrow">SUA PARTE NESSA HISTÓRIA</span>
+              <h2 id="role-title">Vamos juntos</h2>
+            </div>
+            <span id="role-icon">✦</span>
+          </div>
+          <div
+            id="roles"
+            class="role-tabs"
+            role="group"
+            aria-label="Seus papéis"
+          ></div>
+          <p id="help" class="help">Cada peça conta.</p>
+          <div id="controls"></div>
+          <div
+            id="status"
+            class="status"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <div class="reactions" aria-label="Conversar com a equipe">
+            <button data-ping="aqui">📍 Aqui!</button
+            ><button data-ping="cuidado">⚠ Cuidado</button
+            ><button data-ping="espera">✋ Espera</button
+            ><button data-ping="boa">💚 Boa!</button>
+          </div>
+          <details class="memories">
+            <summary>Nossas pequenas conquistas <span>↗</span></summary>
+            <div id="memories"></div>
+          </details>
+          <div id="tv-invite" hidden>
+            <div id="qr"></div>
+            <a id="join-link">Abrir no celular</a>
+          </div>
+          <button id="leave" class="text-button">Sair por agora</button>
+        </section>
+        <section id="admin" hidden>
+          <span class="eyebrow">A CONTA DA FAMÍLIA</span>
+          <h2>Prepare o encontro.</h2>
+          <label for="admin-mode">O que vamos construir?</label
+          ><select id="admin-mode">
+            <option value="torre">Torre juntos</option>
+            <option value="cidade">Missão cidade</option>
+            <option value="mundo">Nossa cidade persistente</option></select
+          ><label for="difficulty">Ritmo</label
+          ><select id="difficulty">
+            <option value="familia">Crianças e avós · Sem pressa</option>
+            <option value="normal">Normal · 10 minutos</option>
+            <option value="desafio">Desafio · 5 minutos</option></select
+          ><button id="create" class="primary">Criar e abrir sala</button>
+        </section>
+      </aside>
+    </main>
+    <dialog id="settings">
+      <form method="dialog">
+        <h2>Do seu jeito</h2>
+        <label for="quality">Qualidade visual</label
+        ><select id="quality">
+          <option value="auto">Automática</option>
+          <option value="baixo">Baixa · Celular leve</option>
+          <option value="medio">Média</option>
+          <option value="alto">Alta</option>
+          <option value="ultra">Ultra</option></select
+        ><button id="theme" type="button" class="secondary">
+          Demonstração: tema de Natal</button
+        ><button id="sound" type="button" class="secondary">
+          Desligar sons</button
+        ><button id="reset" type="button" class="secondary" hidden>
+          Resetar somente ensaio</button
+        ><button class="primary">Pronto</button>
+      </form>
+    </dialog>
+    <div id="toast" class="toast" role="alert" hidden></div>
+    <script src="../../js/firebase-config.js"></script>
+    <script src="vendor/qrcode.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

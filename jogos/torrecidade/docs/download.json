@@ -1,0 +1,80 @@
+{
+  "initialGzipBytes": 379644,
+  "physicsLazyGzipBytes": 75119,
+  "totalGzipBytes": 454763,
+  "initialLimit": 3000000,
+  "totalLimit": 8000000,
+  "pass": true,
+  "files": [
+    {
+      "path": "jogar.html",
+      "bytes": 9657,
+      "gzip": 3082
+    },
+    {
+      "path": "style.css",
+      "bytes": 14476,
+      "gzip": 3614
+    },
+    {
+      "path": "js/app.js",
+      "bytes": 21122,
+      "gzip": 7137
+    },
+    {
+      "path": "js/audio.js",
+      "bytes": 865,
+      "gzip": 421
+    },
+    {
+      "path": "js/backend.js",
+      "bytes": 7436,
+      "gzip": 2701
+    },
+    {
+      "path": "js/cena.js",
+      "bytes": 13708,
+      "gzip": 4107
+    },
+    {
+      "path": "js/qualidade.js",
+      "bytes": 2212,
+      "gzip": 853
+    },
+    {
+      "path": "js/rede.js",
+      "bytes": 14155,
+      "gzip": 3992
+    },
+    {
+      "path": "js/regras.js",
+      "bytes": 14902,
+      "gzip": 4933
+    },
+    {
+      "path": "vendor/three.js",
+      "bytes": 1272972,
+      "gzip": 257859
+    },
+    {
+      "path": "vendor/OrbitControls.js",
+      "bytes": 30973,
+      "gzip": 6746
+    },
+    {
+      "path": "vendor/RoundedBoxGeometry.js",
+      "bytes": 4625,
+      "gzip": 1314
+    },
+    {
+      "path": "vendor/firebase.js",
+      "bytes": 275658,
+      "gzip": 73709
+    },
+    {
+      "path": "vendor/qrcode.min.js",
+      "bytes": 23738,
+      "gzip": 9176
+    }
+  ]
+}

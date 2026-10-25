@@ -1,0 +1,59 @@
+{
+  "rate": 6,
+  "who": "host",
+  "samples": [
+    {
+      "fps": 40,
+      "p95": 33.40000000000009,
+      "calls": 9,
+      "triangles": 3316,
+      "geometries": 10,
+      "textures": 1,
+      "quality": "baixo"
+    },
+    {
+      "fps": 37,
+      "p95": 66.69999999999982,
+      "calls": 15,
+      "triangles": 5008,
+      "geometries": 11,
+      "textures": 1,
+      "quality": "baixo"
+    },
+    {
+      "fps": 60,
+      "p95": 16.700000000000728,
+      "calls": 15,
+      "triangles": 5008,
+      "geometries": 11,
+      "textures": 1,
+      "quality": "baixo"
+    },
+    {
+      "fps": 57,
+      "p95": 33.29999999999927,
+      "calls": 15,
+      "triangles": 5008,
+      "geometries": 11,
+      "textures": 1,
+      "quality": "baixo"
+    },
+    {
+      "fps": 59,
+      "p95": 16.80000000000109,
+      "calls": 15,
+      "triangles": 5008,
+      "geometries": 11,
+      "textures": 1,
+      "quality": "baixo"
+    }
+  ],
+  "bytesPerSecond": 2109.5,
+  "host": true,
+  "renderer": "WebKit WebGL",
+  "fps": 50.6,
+  "p95": 66.69999999999982,
+  "calls": 15,
+  "triangles": 5008,
+  "note": "Chromium SwiftShader emulado; não substitui validação em Mali-G52/Adreno 610 ou iPhone físico."
+}

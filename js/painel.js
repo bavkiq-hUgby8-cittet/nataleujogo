@@ -189,6 +189,33 @@
             card.innerHTML = `<div class="icone" aria-hidden="true">${jogo.icone}</div><h2>${jogo.nome}</h2><p>${jogo.texto}</p>`;
             grade.appendChild(card);
         });
+        const torreCard = document.createElement('article');
+        torreCard.className = 'cartao';
+        const torreTitle = document.createElement('h2');
+        torreTitle.textContent = '🏗️ Torre / Cidade Juntos';
+        const torreDescription = document.createElement('p');
+        torreDescription.textContent = 'Construam juntos, cada um no seu celular. 1–6 jogadores. Torre, missões e a cidade persistente da família.';
+        const torreLink = document.createElement('a');
+        torreLink.className = 'botao';
+        torreLink.href = 'jogos/torrecidade/jogar.html?criar=1&admin=1&familia=' + encodeURIComponent(usuario.uid);
+        torreLink.textContent = 'Abrir nossa construção';
+        const torreTv = document.createElement('a');
+        torreTv.className = 'botao-sec';
+        torreTv.href = 'jogos/torrecidade/tv.html?criar=1&admin=1&familia=' + encodeURIComponent(usuario.uid);
+        torreTv.textContent = 'Jogar com TV';
+        const agora = document.createElement('p');
+        agora.textContent = 'A cidade espera a próxima visita da família.';
+        const mundo = firebase.database().ref('familias/' + usuario.uid + '/jogos/torrecidade/mundo');
+        const pessoas = {};
+        ouvir(mundo.child('jogadores'), (snap) => { Object.assign(pessoas, snap.val() || {}); });
+        const presencaFn = mundo.child('online').on('value', (snap) => {
+            const online = Object.keys(snap.val() || {}).map((uid) => pessoas[uid]?.nome || 'Alguém da família');
+            agora.textContent = online.length ? '🟢 ' + online.slice(0, 3).join(' e ') + ' estão construindo agora' : 'A cidade espera a próxima visita da família.';
+        }, () => { agora.textContent = 'Ative as regras do novo jogo para conectar a família.'; });
+        ouvintes.push(() => mundo.child('online').off('value', presencaFn));
+        torreCard.append(torreTitle, torreDescription, agora, torreLink, torreTv);
+        grade.appendChild(torreCard);
+
     }
 
     async function mudarTema(tema) {

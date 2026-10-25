@@ -28,3 +28,6 @@ window.PACOTES = {
     ],
     emojis: ['🎂', '🎁', '🌟', '🐶', '⚽', '🎵', '📚', '🍕', '🌈', '🎈', '🌸', '🍎', '🎸', '🍀', '🚗', '🧩']
 };
+
+// Metadados isolados; os pacotes dos jogos existentes continuam intactos.
+window.TORRECIDADE = { nome: 'Torre / Cidade Juntos', icone: '🏗️', jogadores: '1–6', remoto: 'jogos/torrecidade/jogar.html', tv: 'jogos/torrecidade/tv.html', descricao: 'Construam juntos, cada um no seu celular.' };

@@ -1,0 +1,38 @@
+name: Torre Cidade — testes isolados
+on:
+  pull_request:
+    paths:
+      - 'jogos/torrecidade/**'
+      - 'database.rules.json'
+      - '.github/workflows/torrecidade.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: jogos/torrecidade
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jogos/torrecidade/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - run: node scripts/budget.mjs
+      - run: npx firebase emulators:exec --only auth,database --project demo-jogos-familia 'npm run test:rules && npm run test:e2e'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: torrecidade-evidencias
+          path: |
+            jogos/torrecidade/playwright-report/
+            jogos/torrecidade/test-results/
+            jogos/torrecidade/docs/

@@ -1,0 +1,615 @@
+{
+  "rules": {
+    "familias": {
+      "$family": {
+        "adminUid": {
+          ".read": "auth != null && auth.uid == $family",
+          ".write": "auth != null && auth.uid == $family && auth.token.email != null && !data.exists() && newData.val() == auth.uid"
+        },
+        "jogos": {
+          "torrecidade": {
+            "salas": {
+              "$room": {
+                ".read": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists())",
+                "config": {
+                  ".read": "auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()",
+                  ".write": "auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()",
+                  ".validate": "newData.hasChildren(['mode','difficulty','theme','invite','created','closed'])",
+                  "mode": {
+                    ".validate": "newData.val() == 'torre' || newData.val() == 'cidade' || newData.val() == 'mundo'"
+                  },
+                  "difficulty": {
+                    ".validate": "newData.val() == 'familia' || newData.val() == 'normal' || newData.val() == 'desafio'"
+                  },
+                  "theme": {
+                    ".validate": "newData.val() == 'neutro' || newData.val() == 'natal'"
+                  },
+                  "invite": {
+                    ".validate": "newData.isString() && newData.val().matches(/^[a-f0-9]{48}$/)"
+                  },
+                  "created": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "closed": {
+                    ".validate": "newData.isBoolean()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "jogadores": {
+                  "$uid": {
+                    ".read": "auth != null && auth.uid == $uid",
+                    ".write": "auth != null && auth.uid == $uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false && newData.child('convite').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/invite').val()",
+                    ".validate": "newData.hasChildren(['nome','avatar','convite','entrouEm','ready'])",
+                    "nome": {
+                      ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 30"
+                    },
+                    "avatar": {
+                      ".validate": "newData.isString() && newData.val().length <= 8"
+                    },
+                    "convite": {
+                      ".validate": "newData.isString() && newData.val().length == 48"
+                    },
+                    "entrouEm": {
+                      ".validate": "newData.isNumber() && ((!data.exists() && newData.val() <= now + 1000 && newData.val() >= now - 10000) || newData.val() == data.val())"
+                    },
+                    "ready": {
+                      ".validate": "newData.isBoolean()"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "online": {
+                  "$uid": {
+                    "$instance": {
+                      ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == $uid",
+                      ".validate": "newData.val() == true && $instance.length <= 64"
+                    }
+                  }
+                },
+                "host": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('online').child(auth.uid).hasChildren() && newData.child('uid').val() == auth.uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('online').child(auth.uid).child(newData.child('instance').val()).val() == true && ((!data.exists() && newData.child('epoch').val() == 1) || (data.exists() && newData.child('epoch').val() == data.child('epoch').val() + 1 && (!root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('online').child(data.child('uid').val()).child(data.child('instance').val()).exists() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('hostBeat/t').val() < now - 2800)))",
+                  ".validate": "newData.hasChildren(['uid','instance','epoch','desde'])",
+                  "uid": {
+                    ".validate": "newData.isString()"
+                  },
+                  "instance": {
+                    ".validate": "newData.isString() && newData.val().length <= 64"
+                  },
+                  "epoch": {
+                    ".validate": "newData.isNumber() && newData.val() >= 1"
+                  },
+                  "desde": {
+                    ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "hostBeat": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','t']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val()",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "inputs": {
+                  "$uid": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == $uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('online').child(auth.uid).hasChildren()",
+                    ".validate": "newData.hasChildren(['seq','type','data','t'])",
+                    "seq": {
+                      ".validate": "newData.isNumber() && newData.val() % 1 == 0 && newData.val() > 0 && newData.val() <= 1000000000 && (!data.exists() || newData.val() == data.val()+1)"
+                    },
+                    "type": {
+                      ".validate": "newData.isString() && newData.val().matches(/^(mover|girar|soltar|escolher|catalogo|escora|segurar|repor|iniciar|proxima|bairro|trocar)$/)"
+                    },
+                    "data": {
+                      ".validate": "newData.isString() && newData.val().length <= 48 && newData.val().matches(/^[ -~]*$/)"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000 && (!data.exists() || newData.val() >= data.val() + 65)"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "estado": {
+                  "snapshot": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                    ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 220000",
+                    "epoch": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "payload": {
+                      ".validate": "newData.isString() && newData.val().length <= 220000"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  },
+                  "frame": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                    ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 14000",
+                    "epoch": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "payload": {
+                      ".validate": "newData.isString() && newData.val().length <= 14000"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  },
+                  "eventos": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                    ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 4000",
+                    "epoch": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "payload": {
+                      ".validate": "newData.isString() && newData.val().length <= 4000"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "pings": {
+                  "$uid": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == $uid",
+                    ".validate": "newData.hasChildren(['type','x','z','t'])",
+                    "type": {
+                      ".validate": "newData.isString() && newData.val().matches(/^(aqui|cuidado|espera|boa|gira|esquerda|solta)$/)"
+                    },
+                    "x": {
+                      ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+                    },
+                    "z": {
+                      ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000 && (!data.exists() || newData.val() >= data.val() + 1000)"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "placar": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','scores']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val()",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "scores": {
+                    "$id": {
+                      ".validate": "newData.hasChildren(['height','stars','time']) && (!data.exists() || newData.val() == data.val())",
+                      "height": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+                      },
+                      "stars": {
+                        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+                      },
+                      "time": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0"
+                      },
+                      "$other": {
+                        ".validate": false
+                      }
+                    }
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "chunks": {
+                  "$chunk": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                    ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 64000",
+                    "epoch": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "payload": {
+                      ".validate": "newData.isString() && newData.val().length <= 64000"
+                    },
+                    "t": {
+                      ".validate": "newData.isNumber()"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "contribuicoes": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 8000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 8000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "linhaDoTempo": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 16000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 16000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "checkpoint": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','versao','salvoEm','revision']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child($room).child('host/epoch').val()",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "versao": {
+                    ".validate": "newData.val() == 1"
+                  },
+                  "salvoEm": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "revision": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "$other": {
+                  ".validate": false
+                },
+                ".write": "$room == 'ensaio' && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()) && !newData.exists()"
+              }
+            },
+            "mundo": {
+              ".read": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists())",
+              "config": {
+                ".read": "auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()",
+                ".write": "auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()",
+                ".validate": "newData.hasChildren(['mode','difficulty','theme','invite','created','closed'])",
+                "mode": {
+                  ".validate": "newData.val() == 'torre' || newData.val() == 'cidade' || newData.val() == 'mundo'"
+                },
+                "difficulty": {
+                  ".validate": "newData.val() == 'familia' || newData.val() == 'normal' || newData.val() == 'desafio'"
+                },
+                "theme": {
+                  ".validate": "newData.val() == 'neutro' || newData.val() == 'natal'"
+                },
+                "invite": {
+                  ".validate": "newData.isString() && newData.val().matches(/^[a-f0-9]{48}$/)"
+                },
+                "created": {
+                  ".validate": "newData.isNumber()"
+                },
+                "closed": {
+                  ".validate": "newData.isBoolean()"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "jogadores": {
+                "$uid": {
+                  ".read": "auth != null && auth.uid == $uid",
+                  ".write": "auth != null && auth.uid == $uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false && newData.child('convite').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/invite').val()",
+                  ".validate": "newData.hasChildren(['nome','avatar','convite','entrouEm','ready'])",
+                  "nome": {
+                    ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 30"
+                  },
+                  "avatar": {
+                    ".validate": "newData.isString() && newData.val().length <= 8"
+                  },
+                  "convite": {
+                    ".validate": "newData.isString() && newData.val().length == 48"
+                  },
+                  "entrouEm": {
+                    ".validate": "newData.isNumber() && ((!data.exists() && newData.val() <= now + 1000 && newData.val() >= now - 10000) || newData.val() == data.val())"
+                  },
+                  "ready": {
+                    ".validate": "newData.isBoolean()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                }
+              },
+              "online": {
+                "$uid": {
+                  "$instance": {
+                    ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == $uid",
+                    ".validate": "newData.val() == true && $instance.length <= 64"
+                  }
+                }
+              },
+              "host": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('online').child(auth.uid).hasChildren() && newData.child('uid').val() == auth.uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('online').child(auth.uid).child(newData.child('instance').val()).val() == true && ((!data.exists() && newData.child('epoch').val() == 1) || (data.exists() && newData.child('epoch').val() == data.child('epoch').val() + 1 && (!root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('online').child(data.child('uid').val()).child(data.child('instance').val()).exists() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('hostBeat/t').val() < now - 2800)))",
+                ".validate": "newData.hasChildren(['uid','instance','epoch','desde'])",
+                "uid": {
+                  ".validate": "newData.isString()"
+                },
+                "instance": {
+                  ".validate": "newData.isString() && newData.val().length <= 64"
+                },
+                "epoch": {
+                  ".validate": "newData.isNumber() && newData.val() >= 1"
+                },
+                "desde": {
+                  ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "hostBeat": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                ".validate": "newData.hasChildren(['epoch','t']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val()",
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "t": {
+                  ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "inputs": {
+                "$uid": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == $uid && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('online').child(auth.uid).hasChildren()",
+                  ".validate": "newData.hasChildren(['seq','type','data','t'])",
+                  "seq": {
+                    ".validate": "newData.isNumber() && newData.val() % 1 == 0 && newData.val() > 0 && newData.val() <= 1000000000 && (!data.exists() || newData.val() == data.val()+1)"
+                  },
+                  "type": {
+                    ".validate": "newData.isString() && newData.val().matches(/^(mover|girar|soltar|escolher|catalogo|escora|segurar|repor|iniciar|proxima|bairro|trocar)$/)"
+                  },
+                  "data": {
+                    ".validate": "newData.isString() && newData.val().length <= 48 && newData.val().matches(/^[ -~]*$/)"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000 && (!data.exists() || newData.val() >= data.val() + 65)"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                }
+              },
+              "estado": {
+                "snapshot": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 220000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 220000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "frame": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 14000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 14000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                },
+                "eventos": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 4000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 4000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                }
+              },
+              "pings": {
+                "$uid": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == $uid",
+                  ".validate": "newData.hasChildren(['type','x','z','t'])",
+                  "type": {
+                    ".validate": "newData.isString() && newData.val().matches(/^(aqui|cuidado|espera|boa|gira|esquerda|solta)$/)"
+                  },
+                  "x": {
+                    ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+                  },
+                  "z": {
+                    ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber() && newData.val() >= now - 2000 && newData.val() <= now + 1000 && (!data.exists() || newData.val() >= data.val() + 1000)"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                }
+              },
+              "placar": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                ".validate": "newData.hasChildren(['epoch','scores']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val()",
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "scores": {
+                  "$id": {
+                    ".validate": "newData.hasChildren(['height','stars','time']) && (!data.exists() || newData.val() == data.val())",
+                    "height": {
+                      ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+                    },
+                    "stars": {
+                      ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+                    },
+                    "time": {
+                      ".validate": "newData.isNumber() && newData.val() >= 0"
+                    },
+                    "$other": {
+                      ".validate": false
+                    }
+                  }
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "chunks": {
+                "$chunk": {
+                  ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                  ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 64000",
+                  "epoch": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "payload": {
+                    ".validate": "newData.isString() && newData.val().length <= 64000"
+                  },
+                  "t": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "$other": {
+                    ".validate": false
+                  }
+                }
+              },
+              "contribuicoes": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 8000",
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "payload": {
+                  ".validate": "newData.isString() && newData.val().length <= 8000"
+                },
+                "t": {
+                  ".validate": "newData.isNumber()"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "linhaDoTempo": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                ".validate": "newData.hasChildren(['epoch','payload']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val() && newData.child('payload').isString() && newData.child('payload').val().length <= 16000",
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "payload": {
+                  ".validate": "newData.isString() && newData.val().length <= 16000"
+                },
+                "t": {
+                  ".validate": "newData.isNumber()"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "checkpoint": {
+                ".write": "auth != null && (auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val() || root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('jogadores').child(auth.uid).exists()) && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/uid').val() && root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('config/closed').val() == false",
+                ".validate": "newData.hasChildren(['epoch','versao','salvoEm','revision']) && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('mundo').child('host/epoch').val()",
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "versao": {
+                  ".validate": "newData.val() == 1"
+                },
+                "salvoEm": {
+                  ".validate": "newData.isNumber()"
+                },
+                "revision": {
+                  ".validate": "newData.isNumber()"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "recordes": {
+              ".read": "auth != null && auth.uid == root.child('familias').child($family).child('adminUid').val()",
+              "$match": {
+                ".read": "auth != null && (!data.exists() || root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child(data.child('sala').val()).child('jogadores').child(auth.uid).exists())",
+                ".write": "auth != null && !data.exists() && auth.uid == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child(newData.child('sala').val()).child('host/uid').val() && newData.child('epoch').val() == root.child('familias').child($family).child('jogos').child('torrecidade').child('salas').child(newData.child('sala').val()).child('host/epoch').val()",
+                ".validate": "newData.hasChildren(['sala','epoch','height','stars','time'])",
+                "sala": {
+                  ".validate": "newData.isString() && newData.val().length <= 6"
+                },
+                "epoch": {
+                  ".validate": "newData.isNumber()"
+                },
+                "height": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+                },
+                "stars": {
+                  ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+                },
+                "time": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

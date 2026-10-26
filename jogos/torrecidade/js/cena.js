@@ -308,7 +308,7 @@ export class Scene {
     }
     for (const [type, mesh] of Object.entries(this.instances)) {
       mesh.count = counts[type] || 0;
-      mesh.instanceMatrix.needsUpdate = true;
+      this.uploadInstances(mesh);
     }
     for (const [mesh, count] of [
       [this.roofs, roof],
@@ -316,7 +316,16 @@ export class Scene {
       [this.windows, win],
     ]) {
       mesh.count = count;
-      mesh.instanceMatrix.needsUpdate = true;
+      this.uploadInstances(mesh);
+    }
+  }
+  uploadInstances(mesh) {
+    // Upload only occupied transforms, not the capacity of a whole district.
+    const matrix = mesh.instanceMatrix;
+    matrix.clearUpdateRanges();
+    if (mesh.count) {
+      matrix.addUpdateRange(0, mesh.count * 16);
+      matrix.needsUpdate = true;
     }
   }
   setFrame(bodies) {

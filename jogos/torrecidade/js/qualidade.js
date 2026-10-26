@@ -1,5 +1,5 @@
 export const LEVELS = {
-  baixo: { ratio: 0.8, shadow: 0 },
+  baixo: { ratio: 0.75, shadow: 0 },
   medio: { ratio: 1, shadow: 512 },
   alto: { ratio: 1.5, shadow: 1024 },
   ultra: { ratio: 2, shadow: 1024 },

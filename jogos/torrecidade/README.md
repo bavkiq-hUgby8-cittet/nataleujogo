@@ -2,12 +2,12 @@
 
 Uma torre, uma cidade e a mesma equipe. Jogo estático em ES Modules para 1–6 pessoas, com celular remoto como experiência principal e TV opcional.
 
-**Entrega em desenvolvimento, PR em rascunho. Não publicar as regras nem usar salas reais antes de revisar os critérios abaixo.** O código fica em `nataleujogo/jogos/torrecidade/`: o repositório `torrecidade` não existia na conta acessível. A branch é `cursor/jogo-torrecidade`, baseada em `cursor/plataforma-multifamilia-c89d`. Nenhum jogo legado foi alterado; só o portal, seu card no painel e a adição isolada de regras.
+**Versão inicial para famílias, publicada mediante autorização do responsável.** O código fica em `nataleujogo/jogos/torrecidade/`: o repositório `torrecidade` não existia na conta acessível. A branch é `cursor/jogo-torrecidade`, baseada em `cursor/plataforma-multifamilia-c89d`. Nenhum jogo legado foi alterado; só o portal, seu card no painel e a adição isolada de regras.
 
 ## Jogar
 
 - Abra `index.html` para experimentar a maquete. **Experimentar agora** é uma demonstração local, explicitamente identificada; não conecta celulares em lugares diferentes.
-- Na plataforma, entre com a conta da família e abra **Torre / Cidade Juntos**. Escolha Torre, Missão Cidade ou Nossa Cidade e o ritmo. Só a conta da família cria configurações e salas.
+- Abra **Criar sala no painel da família** e entre/crie sua conta em `conta.html`. A conta usa o mesmo app Auth padrão da plataforma. Escolha Torre, Missão Cidade ou Nossa Cidade e o ritmo. Só a conta da família cria configurações e salas.
 - Compartilhe o link pelo WhatsApp ou o QR da TV. O link inclui a família, a sala e um convite aleatório de 192 bits. O código curto sozinho não permite ler a sala.
 - Cada convidado escolhe nome/avatar; Firebase Auth anônimo funciona de forma invisível. O login do convidado usa o app Firebase `convidado`, separado da sessão do administrador.
 - Arquiteto escolhe/gira, Construtor posiciona/solta, Engenheiro escora/segura e Intendente repõe recursos. Sozinho, use as abas para todos os papéis. Pessoas adicionais orientam com marcadores.
@@ -75,11 +75,11 @@ Escala entre famílias: nenhum listener em `familias/`, nenhum servidor próprio
 
 ## Segurança e operação manual
 
-1. A configuração atual da plataforma é **demo**. Preencher somente `js/firebase-config.js` com um projeto de produção apropriado.
-2. Ativar Auth e-mail/senha e anônimo. Autorizar o domínio GitHub Pages no Firebase Auth.
-3. Restringir a chave web no Google Cloud aos HTTP referrers `https://bavkiq-hugby8-cittet.github.io/*`, `http://localhost/*` e `http://127.0.0.1/*`. Nenhuma chave YouTube é usada.
-4. Revisar e publicar a **regra composta da raiz do portal**, não substituir todas as regras pelo fragmento isolado do jogo. Publicação não foi executada.
-5. Após revisão/merge autorizado, configurar GitHub Pages na branch aprovada. URL prevista: `https://bavkiq-hugby8-cittet.github.io/nataleujogo/jogos/torrecidade/`. Esta entrega não faz merge nem publica Pages automaticamente.
+1. Produção: projeto dedicado `torre-cidade-juntos`, plano Spark sem cobrança habilitada. Configuração web centralizada em `js/firebase-config.js`; localhost continua isolado no Emulator demo.
+2. Auth e-mail/senha para administradores e anônimo para convidados. Não use credenciais de Google/Firebase Console no jogo: a conta da família é criada no próprio jogo.
+3. Restringir a chave web no Google Cloud aos HTTP referrers `https://bavkiq-hugby8-cittet.github.io/*`, `http://localhost/*` e `http://127.0.0.1/*`. Nenhuma chave YouTube é usada. Conferir o registro de publicação em `docs/PRODUCAO.md`.
+4. O projeto dedicado usa `jogos/torrecidade/database.rules.json`. A regra composta da raiz multifamília é para futura integração da plataforma completa; não sobrescrever bancos de outros jogos.
+5. GitHub Pages publica `main`. O portal atual é preservado, com adição de um card e dos arquivos isolados do jogo. URL: `https://bavkiq-hugby8-cittet.github.io/nataleujogo/jogos/torrecidade/`.
 6. O reset só aceita a sala `ensaio`; nunca apaga `mundo/`. Para encerrar uma sala real, admin deve marcar `config.closed` e revogar/rotacionar seu convite em um fluxo administrativo revisado.
 
 Regras bloqueiam leitura sem associação, listagens de famílias/salas, UID alheio, alteração de configuração por convidado, estado por não-host, epoch antigo, campos inesperados e excesso de ping. O convite é uma capacidade: quem o recebe pode entrar; não compartilhar publicamente. Os convidados autorizados que assumem host são confiáveis. Sem servidor autoritativo independente, não há proteção completa contra um host malicioso; adequado a cooperação privada, não premiação competitiva.

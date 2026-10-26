@@ -34,6 +34,9 @@ async function tv(browser, r) {
 test("2 TVs + 3 celulares: um host, uma vitória e QR correto", async ({
   browser,
 }) => {
+  // Five independent WebGL contexts share a software GPU in hosted CI.
+  // Protocol election/ACK timeouts remain unchanged; allow browser setup time.
+  test.setTimeout(180000);
   const r = await room("cidade"),
     a = await tv(browser, r),
     other = await tv(browser, r);

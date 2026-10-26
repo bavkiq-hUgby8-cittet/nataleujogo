@@ -13,7 +13,7 @@ for (const [source, target] of [
   await copyFile("node_modules/" + source, "vendor/" + target);
 await build({
   stdin: {
-    contents: `export {initializeApp,getApps,getApp} from 'firebase/app';export {getAuth,initializeAuth,indexedDBLocalPersistence,browserLocalPersistence,signInAnonymously,connectAuthEmulator,onAuthStateChanged,signInWithEmailAndPassword} from 'firebase/auth';export {getDatabase,ref,onValue,get,set,update,runTransaction,onDisconnect,connectDatabaseEmulator,serverTimestamp,goOffline,goOnline} from 'firebase/database';`,
+    contents: `export {initializeApp,getApps,getApp} from 'firebase/app';export {getAuth,initializeAuth,indexedDBLocalPersistence,browserLocalPersistence,signInAnonymously,connectAuthEmulator,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut} from 'firebase/auth';export {getDatabase,ref,onValue,get,set,update,runTransaction,onDisconnect,connectDatabaseEmulator,serverTimestamp,goOffline,goOnline} from 'firebase/database';`,
     resolveDir: process.cwd(),
   },
   outfile: "vendor/firebase.js",

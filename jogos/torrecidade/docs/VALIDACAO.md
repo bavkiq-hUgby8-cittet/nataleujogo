@@ -57,3 +57,7 @@ O host é um membro confiável da família. Sem servidor próprio, as regras cer
 Uma família visita o mesmo bairro ativo em conjunto; não são seis bairros simulados em paralelo. Limite atual: 64 bairros de 25 células. Linha do tempo conserva as últimas 40 entradas; contribuições cumulativas permanecem. O formato é versionado para futura migração.
 
 Não foram lidas nem escritas salas reais. Não foram reutilizados projetos Firebase dos jogos antigos. Não há segredo ou token de teste nos artefatos versionados. O SDK Firebase pode registrar advertências no console durante negações deliberadas dos testes de segurança; isso é esperado no teste, não falha escondida do jogo.
+
+## Atualização para publicação
+
+Ver `PRODUCAO.md` para o Firebase real e as validações da liberação. A medição anterior e o checklist de recursos são históricos; a configuração de produção agora existe.

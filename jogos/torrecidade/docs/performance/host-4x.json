@@ -3,17 +3,26 @@
   "who": "host",
   "samples": [
     {
-      "fps": 40,
-      "p95": 50,
-      "calls": 9,
-      "triangles": 3316,
-      "geometries": 10,
+      "fps": 44,
+      "p95": 33.40000000000009,
+      "calls": 12,
+      "triangles": 3808,
+      "geometries": 11,
       "textures": 1,
       "quality": "baixo"
     },
     {
-      "fps": 52,
-      "p95": 33.30000000000018,
+      "fps": 51,
+      "p95": 33.40000000000009,
+      "calls": 15,
+      "triangles": 5008,
+      "geometries": 11,
+      "textures": 1,
+      "quality": "baixo"
+    },
+    {
+      "fps": 60,
+      "p95": 16.700000000000728,
       "calls": 15,
       "triangles": 5008,
       "geometries": 11,
@@ -31,16 +40,7 @@
     },
     {
       "fps": 60,
-      "p95": 16.800000000000182,
-      "calls": 15,
-      "triangles": 5008,
-      "geometries": 11,
-      "textures": 1,
-      "quality": "baixo"
-    },
-    {
-      "fps": 60,
-      "p95": 16.800000000000182,
+      "p95": 16.799999999999272,
       "calls": 15,
       "triangles": 5008,
       "geometries": 11,
@@ -48,11 +48,11 @@
       "quality": "baixo"
     }
   ],
-  "bytesPerSecond": 2076.125,
+  "bytesPerSecond": 2046.625,
   "host": true,
   "renderer": "WebKit WebGL",
-  "fps": 54.4,
-  "p95": 50,
+  "fps": 55,
+  "p95": 33.40000000000009,
   "calls": 15,
   "triangles": 5008,
   "note": "Chromium SwiftShader emulado; não substitui validação em Mali-G52/Adreno 610 ou iPhone físico."

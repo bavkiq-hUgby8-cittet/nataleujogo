@@ -1,14 +1,14 @@
 {
-  "initialGzipBytes": 379644,
+  "initialGzipBytes": 381346,
   "physicsLazyGzipBytes": 75119,
-  "totalGzipBytes": 454763,
+  "totalGzipBytes": 456465,
   "initialLimit": 3000000,
   "totalLimit": 8000000,
   "pass": true,
   "files": [
     {
       "path": "jogar.html",
-      "bytes": 9657,
+      "bytes": 9650,
       "gzip": 3082
     },
     {
@@ -33,12 +33,17 @@
     },
     {
       "path": "js/cena.js",
-      "bytes": 13708,
-      "gzip": 4107
+      "bytes": 13974,
+      "gzip": 4217
+    },
+    {
+      "path": "js/conta.js",
+      "bytes": 2250,
+      "gzip": 1157
     },
     {
       "path": "js/qualidade.js",
-      "bytes": 2212,
+      "bytes": 2213,
       "gzip": 853
     },
     {
@@ -68,8 +73,8 @@
     },
     {
       "path": "vendor/firebase.js",
-      "bytes": 275658,
-      "gzip": 73709
+      "bytes": 276945,
+      "gzip": 74144
     },
     {
       "path": "vendor/qrcode.min.js",

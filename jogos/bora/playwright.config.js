@@ -1,0 +1,2 @@
+import {defineConfig} from '../torrecidade/node_modules/@playwright/test/index.mjs';
+export default defineConfig({testDir:'./tests',testMatch:'*.spec.js',timeout:90000,workers:1,reporter:[['list'],['html',{open:'never'}]],use:{baseURL:'http://127.0.0.1:8765',headless:true,launchOptions:{args:['--no-sandbox']},screenshot:'only-on-failure',video:'on'},webServer:{command:'python3 -m http.server 8765 --bind 127.0.0.1 --directory ../..',port:8765,reuseExistingServer:false}});

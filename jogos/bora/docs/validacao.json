@@ -1,0 +1,23 @@
+{
+  "unitarios": {
+    "passed": 14,
+    "failed": 0
+  },
+  "regras": {
+    "passed": 7,
+    "failed": 0
+  },
+  "e2e": {
+    "passed": 6,
+    "failed": 0
+  },
+  "ambiente": "Firebase Emulator demo-jogos-familia; Chromium; Pixel 5/iPhone 13/360px",
+  "regras_anteriores_preservadas": true,
+  "construcao_preservada": true,
+  "production_online_smoke": {
+    "passed": 7,
+    "failed": 0,
+    "scope": "synthetic family / bora / ensaio; REST Auth + RTDB"
+  },
+  "regressao_rede": "Presença confirmada antes de inputs, limiter compartilhado e único envio em voo; 3 testes unitários."
+}

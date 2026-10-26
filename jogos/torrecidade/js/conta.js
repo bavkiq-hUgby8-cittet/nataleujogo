@@ -15,9 +15,18 @@ F.onAuthStateChanged(auth,user => {
   const ready = user && !user.isAnonymous;
   $('login').hidden=!!ready; $('signed').hidden=!ready;
   $('identity').textContent=ready ? user.email : '';
-  $('message').textContent=ready ? 'Conta conectada. Vamos construir!' : '';
+  $('message').textContent=ready ? (new URLSearchParams(location.search).has('festa') ? 'Conta conectada. Bora jogar!' : 'Conta conectada. Vamos construir!') : '';
 });
 $('login').onsubmit=e=>{e.preventDefault();action(()=>F.signInWithEmailAndPassword(auth,$('email').value.trim(),$('password').value));};
 $('register').onclick=()=>{if(!$('login').reportValidity()) return; action(()=>F.createUserWithEmailAndPassword(auth,$('email').value.trim(),$('password').value));};
 $('recover').onclick=()=>{if(!$('email').reportValidity())return;action(async()=>{await F.sendPasswordResetEmail(auth,$('email').value.trim());$('message').textContent='Se houver uma conta com esse e-mail, você receberá as instruções para recuperar o acesso.';});};
 $('logout').onclick=()=>action(()=>F.signOut(auth));
+
+if(new URLSearchParams(location.search).has('festa')) {
+  document.title='Conta do anfitrião · Bora!';
+  document.querySelector('h1').textContent='Sua turma, na mesma partida.';
+  document.querySelector('.brand').textContent='↗ bora! party arcade';
+  const links=document.querySelectorAll('#signed a');
+  links[0].href='../bora/index.html?criar=1'; links[0].textContent='Criar sala Bora!';
+  links[1].hidden=true;
+}

@@ -85,7 +85,7 @@ export class Scene {
     this.pointer();
     const animate = (now) => {
       this.raf = requestAnimationFrame(animate);
-      if (document.hidden) return;
+      if (document.hidden || this.canvas.hidden) return;
       this.controls.update();
       this.updateAnimations(now);
       this.renderer.render(this.scene, this.camera);

@@ -20,3 +20,11 @@ Publicação autorizada pelo responsável em 25/10/2026 (America/Fortaleza).
 O Google Cloud Console retornou `Site Unavailable` ao abrir a página de credenciais; por isso a restrição HTTP referrer da chave web não foi configurada por este agente. Aplicar manualmente em APIs e serviços → Credenciais, projeto `torre-cidade-juntos`: permitir `https://bavkiq-hugby8-cittet.github.io/*`, `http://localhost/*`, `http://127.0.0.1/*`. Não desativar as restrições de API existentes. A chave web é pública; autorização de leitura/escrita é imposta por Auth + RTDB Rules, já publicadas e testadas.
 
 Permanecem os limites documentados em VALIDACAO.md: validação em aparelhos reais, teste com crianças/avós, escala máxima e efeitos avançados. Esta é a primeira versão utilizável, não uma certificação de todos os critérios ambiciosos do briefing.
+
+## Conferência no endereço público
+
+O GitHub Pages publicou com sucesso o merge `55f1d3f`. A missão Cidade foi concluída pela interface no Firebase real, em família sintética e sala `ensaio`, com 4 peças e vitória coletiva. O navegador da conferência não disponibilizava WebGL e utilizou o fallback 2D. Os seis testes REST de autorização em `producao-smoke.json` passaram. Não foram utilizadas salas reais de festas.
+
+A suíte completa local passou com 24 E2E; o workflow de desenvolvimento 40256051426 passou com o mesmo subtree do jogo. O workflow de publicação 40256114809 passou em 22 cenários e falhou em dois limites de FPS de cliente (27 e 23,6 FPS). Os navegadores auxiliares disputavam a GPU emulada com o cliente medido. O modo 2D agora interrompe o render do canvas oculto, e o benchmark de cliente coloca o host auxiliar nesse modo mantendo física e rede; o benchmark de host continua com 3D. Após essa correção, os 9 testes locais de desempenho e remoto passaram, preservando o limite de 30 FPS. Isso não substitui a validação em aparelhos reais.
+
+Durante a conferência pública houve um aviso transitório de permissão ao gravar `hostBeat`; as peças e a vitória foram salvas e a partida continuou. A possível disputa de epoch durante suspensão de abas ainda precisa de investigação. Não considerar a meta de console sem warnings integralmente certificada.

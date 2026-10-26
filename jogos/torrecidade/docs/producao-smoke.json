@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "check": "admin family identity",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "admin create ensaio",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "anonymous root listing denied",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "check": "guest joins invited ensaio",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "guest reads invited room",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "guest cannot write state",
+      "status": 401,
+      "pass": true
+    }
+  ],
+  "project": "torre-cidade-juntos",
+  "scope": "synthetic family, sala=ensaio"
+}

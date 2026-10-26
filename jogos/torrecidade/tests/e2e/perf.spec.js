@@ -7,6 +7,10 @@ for (const rate of [4, 6])
       const r = await room(),
         a = await player(browser, r, "Ana");
       const b = who === "cliente" ? await player(browser, r, "Bia") : null;
+      // Remote phones have separate GPUs. Keep the helper host's physics/network
+      // running, but use its supported 2D controls so it does not compete with
+      // the measured client's software GPU on this one CI machine.
+      if (b) await a.page.locator("#toggle-3d").click();
       const measured = b || a;
       await measured.page.setViewportSize({ width: 360, height: 640 });
       const cdp = await measured.context.newCDPSession(measured.page);

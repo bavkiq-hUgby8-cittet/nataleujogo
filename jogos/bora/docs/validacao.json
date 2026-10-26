@@ -1,6 +1,6 @@
 {
   "unitarios": {
-    "passed": 11,
+    "passed": 14,
     "failed": 0
   },
   "regras": {
@@ -18,5 +18,6 @@
     "passed": 7,
     "failed": 0,
     "scope": "synthetic family / bora / ensaio; REST Auth + RTDB"
-  }
+  },
+  "regressao_rede": "Presença confirmada antes de inputs, limiter compartilhado e único envio em voo; 3 testes unitários."
 }

@@ -22,7 +22,7 @@ export class PartyNetwork {
     this.b.watch('estado/frame',received,fail);
     this.b.watch('inputs',v=>{this.controls=v||{};},fail);
     this.b.watch('config',v=>{if(v?.closed){this.fail(Error('O anfitrião encerrou a sala.'));this.close();}},fail);
-    this.b.connection(async yes=>{this.connected=yes;this.onStatus(yes?'Conectando a turma…':'Sem conexão · reconectando');if(yes&&!this.stopped){try{await this.b.presence(this.uid,this.instance);await this.elect();}catch(e){this.fail(e);}}});
+    this.b.connection(async yes=>{this.connected=yes;this.presenceReady=false;this.onStatus(yes?'Conectando a turma…':'Sem conexão · reconectando');if(yes&&!this.stopped){try{await this.b.presence(this.uid,this.instance);this.presenceReady=true;await this.elect();}catch(e){this.fail(e);}}});
     this.timers.push(setInterval(()=>this.elect().catch(fail),500));
     this.timers.push(setInterval(()=>this.tick(),1000/30));
     this.timers.push(setInterval(()=>this.sendInput().catch(fail),90));
@@ -60,10 +60,17 @@ export class PartyNetwork {
     if(now-this.lastBeat>900&&!this.beating){this.lastBeat=now;this.beating=true;this.b.write('hostBeat',{epoch:this.host.epoch,t:now}).catch(e=>this.fail(e)).finally(()=>this.beating=false);}
   }
   async publish(full=false){if(!this.isHost||!this.state||this.publishing)return;this.publishing=true;const data={epoch:this.host.epoch,payload:pack(this.state),t:this.b.now()};try{await this.b.patch({'estado/frame':data,...(full||this.b.now()-(this.checkpoint||0)>2000?{'estado/snapshot':data}:{})});if(full||this.b.now()-(this.checkpoint||0)>2000)this.checkpoint=this.b.now();}finally{this.publishing=false;}}
-  async sendInput(){if(!this.connected||this.sending||this.stopped)return;this.sending=true;const seq=this.seq+1;try{await this.b.write('inputs/'+this.uid,{seq,type:'mover',data:JSON.stringify({...input(this.value),x:Math.round(this.value.x*100)/100,y:Math.round(this.value.y*100)/100}),t:this.b.now()});this.seq=seq;}finally{this.sending=false;}}
+  async sendInput(){
+    const now=this.b.now();
+    // Blur and periodic sends share one limiter. No input may precede the presence ACK.
+    if(!this.connected||!this.presenceReady||this.sending||this.stopped||now-this.lastInput<85)return;
+    this.lastInput=now;this.sending=true;const seq=this.seq+1;
+    this.inputWrite=this.b.write('inputs/'+this.uid,{seq,type:'mover',data:JSON.stringify({...input(this.value),x:Math.round(this.value.x*100)/100,y:Math.round(this.value.y*100)/100}),t:now});
+    try{await this.inputWrite;this.seq=seq;}finally{this.sending=false;}
+  }
   start(game,playlist){if(!this.isHost||!this.ready)return false;if(!['lobby','final'].includes(this.state.status))return false;this.state.round=0;this.state.results=[];this.state.players.forEach(p=>p.cup=0);this.state.playlist=playlist;startRound(this.state,game);this.publish(true).catch(e=>this.fail(e));return true;}
   next(){if(!this.isHost)return;nextRound(this.state);this.publish(true).catch(e=>this.fail(e));}
   async fail(e){if(this.stopped)return;if(/permission/i.test(e.message)&&this.host){try{const host=await this.b.read('host');if(host?.epoch!==this.host.epoch){this.host=host;this.ready=false;this.onStatus('Novo anfitrião conectado');return;}}catch{}}
     this.onError(e);}
-  async close(){this.stopped=true;this.timers.forEach(clearInterval);removeEventListener('blur',this.onHide);removeEventListener('pagehide',this.onExit);if(this.b){try{await this.b.leave(this.uid,this.instance);}finally{this.b.close();}}}
+  async close(){this.stopped=true;this.timers.forEach(clearInterval);removeEventListener('blur',this.onHide);removeEventListener('pagehide',this.onExit);if(this.b){try{await this.inputWrite?.catch(()=>{});await this.b.leave(this.uid,this.instance);}finally{this.b.close();}}}
 }

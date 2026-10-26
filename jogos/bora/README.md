@@ -33,10 +33,12 @@ O emulator local usa `jogos/bora/database.rules.json`, isolado. Em produção pu
 
 ## Validação desta versão
 
-11 testes unitários, 7 testes de regras e 6 E2E passaram localmente. Os E2E cobrem os quatro jogos com CPU, festa completa, joystick/botões, 360px, três celulares online, entrada no meio da fase, saída do anfitrião, migração e substituição por CPU. O teste também verifica que a página original Torre/Cidade continua funcionando. Capturas e vídeos ficam no artefato `bora-evidencias` do workflow.
+14 testes unitários, 7 testes de regras e 6 E2E passaram localmente. Os E2E cobrem os quatro jogos com CPU, festa completa, joystick/botões, 360px, três celulares online, entrada no meio da fase, saída do anfitrião, migração e substituição por CPU. O teste também verifica que a página original Torre/Cidade continua funcionando. Capturas e vídeos ficam no artefato `bora-evidencias` do workflow.
 
 Não estão certificados: 300ms com perda de pacotes, orçamento de rede em escala, Android físico de entrada, migração após fechamento abrupto em todos os navegadores e equilíbrio de dificuldade com crianças/avós. Os snapshots remotos ainda usam renderização direta a aproximadamente 10 Hz; interpolação e medição de tráfego são próximos passos. O limite do projeto Spark é compartilhado; acompanhar conexões e tráfego antes de divulgação ampla. A restrição HTTP referrer da chave web continua pendente do projeto anterior; Auth e regras já isolam as salas por convite/uid.
 
 ## Publicação
 
 GitHub Pages na pasta `jogos/bora/`, separado de Torre/Cidade. Portal recebe um card novo; nenhum outro jogo é substituído. Esta é uma versão inicial para testar a direção de jogo, não uma implementação de todos os requisitos do antigo briefing de construção.
+
+A primeira execução no GitHub detectou um input antes da confirmação da presença/fora do intervalo mínimo. O transporte agora aguarda a presença e usa um único limitador para blur e envio periódico; três testes unitários cobrem essa regressão. As asserções de console limpo foram mantidas.

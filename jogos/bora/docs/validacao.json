@@ -1,0 +1,18 @@
+{
+  "unitarios": {
+    "passed": 11,
+    "failed": 0
+  },
+  "regras": {
+    "passed": 7,
+    "failed": 0
+  },
+  "e2e": {
+    "passed": 6,
+    "failed": 0
+  },
+  "ambiente": "Firebase Emulator demo-jogos-familia; Chromium; Pixel 5/iPhone 13/360px",
+  "regras_anteriores_preservadas": true,
+  "construcao_preservada": true,
+  "production_online_smoke": "pending"
+}

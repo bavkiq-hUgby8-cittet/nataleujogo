@@ -1,0 +1,38 @@
+name: Bora Party Arcade — testes
+on:
+  pull_request:
+    paths:
+      - 'jogos/bora/**'
+      - 'jogos/torrecidade/js/backend.js'
+      - 'jogos/torrecidade/js/conta.js'
+      - 'database.rules.json'
+      - '.github/workflows/bora.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jogos/torrecidade/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+        working-directory: jogos/torrecidade
+      - run: npx playwright install --with-deps chromium
+        working-directory: jogos/torrecidade
+      - run: node --test jogos/bora/tests/*.test.mjs
+      - run: ../torrecidade/node_modules/.bin/firebase emulators:exec --only auth,database --project demo-jogos-familia 'node --test tests/regras.mjs && ../torrecidade/node_modules/.bin/playwright test'
+        working-directory: jogos/bora
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bora-evidencias
+          path: |
+            jogos/bora/playwright-report/
+            jogos/bora/test-results/

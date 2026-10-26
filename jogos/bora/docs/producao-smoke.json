@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "check": "admin identity",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "create Bora ensaio",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "root enumeration denied",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "check": "guest invited join",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "guest reads own room",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "check": "guest state write denied",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "check": "construction room isolation",
+      "status": 401,
+      "pass": true
+    }
+  ],
+  "scope": "synthetic family / bora / ensaio"
+}

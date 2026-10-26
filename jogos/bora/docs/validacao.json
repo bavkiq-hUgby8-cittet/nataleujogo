@@ -14,5 +14,9 @@
   "ambiente": "Firebase Emulator demo-jogos-familia; Chromium; Pixel 5/iPhone 13/360px",
   "regras_anteriores_preservadas": true,
   "construcao_preservada": true,
-  "production_online_smoke": "pending"
+  "production_online_smoke": {
+    "passed": 7,
+    "failed": 0,
+    "scope": "synthetic family / bora / ensaio; REST Auth + RTDB"
+  }
 }
